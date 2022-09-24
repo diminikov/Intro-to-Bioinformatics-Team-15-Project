@@ -1,5 +1,14 @@
-install.packages("devtools")
-install.packages("tidyverse")
+if (!require("devtools", quietly = TRUE))
+  install.packages("devtools")
+
+if (!require("tidyverse", quietly = TRUE))
+  install.packages("tidyverse")
+
+if (!require("magrittr", quietly = TRUE))
+  install.packages("magrittr")
+
+if (!require("readr", quietly = TRUE))
+  install.packages("readr")
 
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
