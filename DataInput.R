@@ -42,5 +42,41 @@ mapped_list <- mapIds(
   multiVals = "list"
 )
 
+# Let's make our list a bit more manageable by turning it into a data frame
+mapped_df <- mapped_list %>%
+  tibble::enframe(name = "Ensembl", value = "Entrez") %>%
+  # enframe() makes a `list` column; we will simplify it with unnest()
+  # This will result in one row of our data frame per list item
+  tidyr::unnest(cols = Entrez)
+
+multi_mapped <- mapped_df %>%
+  # Let's count the number of times each Ensembl ID appears in `Ensembl` column
+  dplyr::count(Ensembl, name = "entrez_id_count") %>%
+  # Arrange by the genes with the highest number of Entrez IDs mapped
+  dplyr::arrange(desc(entrez_id_count))
+
+# Let's look at the first 6 rows of our `multi_mapped` object
+head(multi_mapped)
+
+expression_df_data <- expression_df
+for( i in 1:nrow(expression_df_data)){
+  expression_df_data[i, 1] <- mapped_df[i, 2] 
+}
+
+df_data_var <- expression_df_data
+for( i in 1:nrow(df_data_var)){
+  df_data_var[i, 2] <- var(as.vector(t(expression_df_data[i,2:ncol(df_data_var)])))
+  #print(as.vector(t(expression_df_data[i,2:ncol(df_data_var)])))
+}
+geneVariation <- df_data_var[,1:2]
+#print(as.vector(t(expression_df_data[1,2:ncol(df_data_var)])))
+
+library(ggplot2)
+p <- ggplot(geneVariation, aes(x = Gene, y = MUG207A37)) + 
+  geom_point()
+view(p)
 
 
+# Log base 10 scale + log ticks (on left and bottom side)
+p + scale_y_continuous(trans = 'log2')
+view(p)
