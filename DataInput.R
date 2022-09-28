@@ -139,6 +139,8 @@ for( i in 1:nrow(df_data_var)){
 }
 geneVariation <- df_data_var[,1:2]
 #print(as.vector(t(expression_df_data[1,2:ncol(df_data_var)])))
+print(typeof(geneVariation$MUG207A37))
+genevariation_avg <- mean(geneVariation$MUG207A37) 
 
 library(ggplot2)
 p <- ggplot(geneVariation, aes(x = Gene, y = MUG207A1)) + 
