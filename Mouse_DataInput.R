@@ -47,14 +47,11 @@ geneVariation <- expression_df_data[,1:2]
 print(geneVariation$Row.names)
 print(mean(geneVariation$Row.names))
 print(typeof(geneVariation$Row.names))
-geneVariation[,1:2] <- as.numeric(unlist(geneVariation$Row.names))
+geneVariation[,2] <- as.numeric(unlist(geneVariation$Row.names))
 genevariation_avg <- mean(geneVariation$Row.names) 
 
 library(ggplot2)
-p <- ggplot(geneVariation, aes(x = Gene, y = MUG207A1)) + 
-  geom_point()
-view(p)
-
-# Log base 10 scale + log ticks (on left and bottom side)
-p + scale_y_continuous(trans = 'log2')
-view(p)
+ggplot(geneVariation, aes(x = Gene, y = Row.names)) + 
+  geom_point()+
+  scale_y_continuous(trans = 'log2') +
+  ylab("Average Sample Variance")
