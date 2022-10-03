@@ -14,6 +14,10 @@ if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install(version = "3.15")
 
+# Github
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("sinhrks/ggfortify")
+
 # Install the Human package
 if (!("org.Hs.eg.db" %in% installed.packages())) {
   # Install this package if it isn't installed yet
@@ -39,7 +43,7 @@ mapped_list <- mapIds(
   keys = expression_df$Gene,
   keytype = "ENSEMBL", # Replace with the type of gene identifiers in your data
   column = "SYMBOL", # The type of gene identifiers you would like to map to
-  multiVals = "list"
+  multiVals = "filter"
 )
 
 # Let's make our list a bit more manageable by turning it into a data frame
@@ -49,6 +53,14 @@ mapped_df <- mapped_list %>%
   # This will result in one row of our data frame per list item
   tidyr::unnest(cols = Entrez)
 
+multi_mapped <- mapped_df %>%
+  # Let's count the number of times each Ensembl ID appears in `Ensembl` column
+  dplyr::count(Ensembl, name = "entrez_id_count") %>%
+  # Arrange by the genes with the highest number of Entrez IDs mapped
+  dplyr::arrange(desc(entrez_id_count))
+
+# Let's look at the first 6 rows of our `multi_mapped` object
+head(multi_mapped)
 
 expression_df_data <- expression_df
 for( i in 1:nrow(expression_df_data)){
@@ -64,7 +76,31 @@ geneVariation <- df_data_var[,1:2]
 #print(as.vector(t(expression_df_data[1,2:ncol(df_data_var)])))
 
 library(ggplot2)
-ggplot(geneVariation, aes(x = Gene, y = MUG207A37)) + 
-  geom_point()+
-  scale_y_continuous(trans = 'log2') +
-  ylab("Average Sample Variance")
+#ggplot(geneVariation, aes(x = Gene, y = MUG207A37)) + 
+#  geom_point()+
+#  scale_y_continuous(trans = 'log2') +
+#  ylab("Average Sample Variance")
+#slotNames("Matrix")
+
+
+
+# 10/2
+
+library(ggfortify)
+
+library("DESeq2")
+# countData
+#head(expression_df_data, 10)
+metaData <- colnames(expression_df_data[,-1])
+expression_df_data1 <- make.names(expression_df_data[,1], unique = TRUE)
+
+dds <- DESeqDataSetFromMatrix(countData=expression_df_data, 
+                              colData=metaData,
+                              design=~ V1,tidy = TRUE)
+
+vsd <- vst(dds , blind =FALSE)
+rld <- rlog(dds, blind=FALSE)
+head(assay(vsd), 3)
+plotPCA(vsd, intgroup=c("condition", "type"))
+
+

@@ -51,7 +51,10 @@ geneVariation[,2] <- as.numeric(unlist(geneVariation$Row.names))
 genevariation_avg <- mean(geneVariation$Row.names) 
 
 library(ggplot2)
-ggplot(geneVariation, aes(x = Gene, y = Row.names)) + 
-  geom_point()+
-  scale_y_continuous(trans = 'log2') +
-  ylab("Average Sample Variance")
+p <- ggplot(geneVariation, aes(x = Gene, y = Row.Names)) + 
+  geom_point()
+view(p)
+
+# Log base 10 scale + log ticks (on left and bottom side)
+p + scale_y_continuous(trans = 'log2')
+view(p)
