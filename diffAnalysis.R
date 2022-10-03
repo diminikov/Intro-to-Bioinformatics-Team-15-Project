@@ -75,6 +75,10 @@ for( i in 1:nrow(human_cancer_data_var)){
 human_geneVariation <- human_cancer_data[,1:2]
 #print(as.vector(t(expression_df_data[1,2:ncol(df_data_var)])))
 view(human_geneVariation)
+human_geneVariation <- human_cancer_data[,1:2]
+human_geneVariation[,2] <- as.numeric(unlist(human_geneVariation$MUG207A1))
+human_genevariation_avg <- mean(human_geneVariation$MUG207A1) 
+
 library(ggplot2)
 p_human <-ggplot(human_geneVariation, aes(x = Gene, y = MUG207A1)) + 
   geom_point()+
