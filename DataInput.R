@@ -24,6 +24,11 @@ if (!("org.Hs.eg.db" %in% installed.packages())) {
   BiocManager::install("org.Hs.eg.db", update = FALSE)
 }
 
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("Rsubread")
+
 # Attach the library
 library(org.Hs.eg.db)
 
@@ -66,6 +71,14 @@ expression_df_data <- expression_df
 for( i in 1:nrow(expression_df_data)){
   expression_df_data[i, 1] <- mapped_df[i, 2] 
 }
+x <- c(expression_df_data[,1])
+duplicated(x)
+expression_df_data %>% distinct(expression_df_data[,1], .keep_all = TRUE)
+x <- c(expression_df_data[,1])
+duplicated(x)
+
+expression_df_data 
+view(x)
 
 df_data_var <- expression_df_data
 for( i in 1:nrow(df_data_var)){
@@ -92,6 +105,7 @@ library("DESeq2")
 # countData
 #head(expression_df_data, 10)
 metaData <- colnames(expression_df_data[,-1])
+view(metaData)
 expression_df_data1 <- make.names(expression_df_data[,1], unique = TRUE)
 
 dds <- DESeqDataSetFromMatrix(countData=expression_df_data, 
