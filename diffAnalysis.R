@@ -78,7 +78,6 @@ view(human_geneVariation)
 human_geneVariation <- human_cancer_data[,1:2]
 human_geneVariation[,2] <- as.numeric(unlist(human_geneVariation$MUG207A1))
 human_genevariation_avg <- mean(human_geneVariation$MUG207A1) 
-
 library(ggplot2)
 p_human <-ggplot(human_geneVariation, aes(x = Gene, y = MUG207A1)) + 
   geom_point()+
@@ -88,7 +87,54 @@ slotNames("Matrix")
 p_human + scale_y_continuous(trans = 'log2')
 view(p_human)
 
+#HUMAN WITHOUT CANCER
+human_no_cancer <- readr::read_tsv("GSE183516_Normalized_counts_AT2_pAT2_samples.txt")
+# Tuck away the Gene ID column as row names
+human_no_cancer = tibble::column_to_rownames(human_no_cancer,var="...1")
 
+human_no_cancer <- human_no_cancer %>%
+  tibble::rownames_to_column("Gene")
+
+mapped_list <- mapIds(
+  org.Hs.eg.db, # Replace with annotation package for your organism
+  keys = human_no_cancer$Gene,
+  keytype = "ENSEMBL", # Replace with the type of gene identifiers in your data
+  column = "SYMBOL", # The type of gene identifiers you would like to map to
+  multiVals = "filter"
+)
+
+# Let's make our list a bit more manageable by turning it into a data frame
+mapped_df <- mapped_list %>%
+  tibble::enframe(name = "Ensembl", value = "Entrez") %>%
+  # enframe() makes a `list` column; we will simplify it with unnest()
+  # This will result in one row of our data frame per list item
+  tidyr::unnest(cols = Entrez)
+multi_mapped <- mapped_df %>%
+  # Let's count the number of times each Ensembl ID appears in `Ensembl` column
+  dplyr::count(Ensembl, name = "entrez_id_count") %>%
+  # Arrange by the genes with the highest number of Entrez IDs mapped
+  dplyr::arrange(desc(entrez_id_count))
+# Let's look at the first 6 rows of our `multi_mapped` object
+head(multi_mapped)
+human_no_cancer_data <- human_no_cancer
+for( i in 1:nrow(human_no_cancer_data)){
+  human_no_cancer_data[i, 1] <- mapped_df[i, 2] 
+}
+human_no_cancer_data_var <- human_no_cancer_data
+for( i in 1:nrow(human_no_cancer_data_var)){
+  human_no_cancer_data_var[i, 2] <- var(as.vector(t(human_no_cancer_data[i,2:ncol(human_no_cancer_data_var)])))
+}
+human_no_cancer_geneVariation <- human_no_cancer_data[,1:2]
+human_no_cancer_geneVariation <- human_no_cancer_data[,1:2]
+human_no_cancer_geneVariation[,2] <- as.numeric(unlist(human_no_cancer_geneVariation$MUG207A37))
+human_no_cancer_genevariation_avg <- mean(human_no_cancer_geneVariation$MUG207A37) 
+library(ggplot2)
+p_human_no_cancer <-ggplot(human_no_cancer_geneVariation, aes(x = Gene, y = MUG207A37)) + 
+  geom_point()+
+  scale_y_continuous(trans = 'log2') +
+  ylab("Average Sample Variance")
+slotNames("Matrix")
+p_human_no_cancer + scale_y_continuous(trans = 'log2')
 
 #MOUSE
 # Install the Mouse package
@@ -113,11 +159,10 @@ mouse_cancer <- mouse_cancer %>%
 
 
 mouse_cancer_data <- mouse_cancer
-for( i in 1:nrow(mouse_cancer_data)){
+for ( i in 1:nrow(mouse_cancer_data)) {
   mouse_cancer_data[i, 1] <- mouse_cancer[i, 3] 
   mouse_cancer_data[i, 2] <- var(as.vector(t(mouse_cancer_data[i,4:ncol(mouse_cancer)])))
 }
-view(mouse_cancer_data)
 mouse_geneVariation <- mouse_cancer_data[,1:2]
 mouse_geneVariation[,2] <- as.numeric(unlist(mouse_geneVariation$Row.names))
 mouse_genevariation_avg <- mean(mouse_geneVariation$Row.names) 
@@ -131,4 +176,5 @@ slotNames("Matrix")
 
 # Log base 10 scale + log ticks (on left and bottom side)
 p_mouse + scale_y_continuous(trans = 'log2')
-view(p_mouse)
+library(readr)
+GSE183548_series_matrix <- read_delim("GSE183548_series_matrix.txt", delim = "\t", escape_double = FALSE, col_names = FALSE, trim_ws = TRUE, skip = 28)
