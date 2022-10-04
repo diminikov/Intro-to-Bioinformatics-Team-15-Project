@@ -1,22 +1,26 @@
 library(readr)
-GSE183548_series_matrix <- read_delim("GSE183548_series_matrix.txt", delim = "\t", escape_double = FALSE, col_names = FALSE, trim_ws = TRUE, skip = 28)
-mouseColdata = data.frame(t(GSE183548_series_matrix[1:39,-1]))
-colnames(mouseColdata) = sub("!Sample_", "", GSE183548_series_matrix$X1[1:39])
-rownames(mouseColdata) = unlist(GSE183548_series_matrix[18,-1])
-mouseColdata = mouseColdata[,-18]
-mouseColdata = mouseColdata[-1:-18,]
+GSE183516_series_matrix <- read_delim("GSE183516_series_matrix.txt", delim = "\t", escape_double = FALSE, col_names = FALSE, trim_ws = TRUE, skip = 28)
+HumanColdata = data.frame(t(GSE183516_series_matrix[1:39,-1]))
+colnames(HumanColdata) = sub("!Sample_", "", GSE183516_series_matrix$X1[1:39])
+rownames(HumanColdata) = unlist(GSE183516_series_matrix[19,-1])
+#HumanColdata = HumanColdata[,-1]
+HumanColdata = HumanColdata[-37:-60,]
 
-GSE183548_Normalized_counts_3LL_samples <- read_delim("GSE183548_Normalized_counts_3LL_samples.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
-mouseCounts = data.frame(GSE183548_Normalized_counts_3LL_samples)
-rownames(mouseCounts) = GSE183548_Normalized_counts_3LL_samples$Row.names
-mouseCounts = mouseCounts[,-1:-3]
 
-all(rownames(mouseColdata) %in% colnames(mouseCounts))
+GSE183516_Normalized_counts_H23_H358_A549_cell_lines <- read_delim("GSE183516_Normalized_counts_H23_H358_A549_cell_lines.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
+HumanCounts<-GSE183516_Normalized_counts_H23_H358_A549_cell_lines[,order(colnames(GSE183516_Normalized_counts_H23_H358_A549_cell_lines))]
+GSE183516_Normalized_counts_H23_H358_A549_cell_lines[ , order(colnames(GSE183516_Normalized_counts_H23_H358_A549_cell_lines))]
 
-mouseCounts
+HumanCounts = data.frame(GSE183516_Normalized_counts_H23_H358_A549_cell_lines)
+rownames(HumanCounts) = GSE183516_Normalized_counts_H23_H358_A549_cell_lines$...1
+HumanCounts = HumanCounts[,-1]
 
-dds <- DESeqDataSetFromMatrix(countData = round(mouseCounts),
-                              colData = mouseColdata,
+all(rownames(HumanColdata) %in% colnames(HumanCounts))
+
+HumanCounts
+
+dds <- DESeqDataSetFromMatrix(countData = round(HumanCounts),
+                              colData = HumanColdata,
                               design = ~ title)
 dds
 
