@@ -15,15 +15,17 @@ HumanCounts = data.frame(GSE183516_Normalized_counts_H23_H358_A549_cell_lines)
 rownames(HumanCounts) = GSE183516_Normalized_counts_H23_H358_A549_cell_lines$...1
 HumanCounts = HumanCounts[,-1]
 
+library("stringr")
+HumanCounts = HumanCounts[,str_sort(names(HumanCounts), numeric = TRUE)]
+
 all(rownames(HumanColdata) %in% colnames(HumanCounts))
 
-HumanCounts
 
-dds <- DESeqDataSetFromMatrix(countData = round(HumanCounts),
+library("DESeq2")
+humandds <- DESeqDataSetFromMatrix(countData = round(HumanCounts),
                               colData = HumanColdata,
                               design = ~ title)
-dds
 
-vsd <- vst(dds)
-rld <- rlog(dds)
-plotPCA(vsd, intgroup=c("title"))
+humanvsd <- vst(humandds)
+#rld <- rlog(dds)
+plotPCA(humanvsd, intgroup=c("title"))
