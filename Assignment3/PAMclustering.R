@@ -6,7 +6,7 @@ scaleddata = scale(top5k)
 fviz_nbclust(scaleddata, pam, method ="silhouette")+theme_minimal()
 
 
-pamResult <- pam(top5k, k = 1000)
+pamResult <- pam(top5k, k = 25)
 pamResult
 
 
