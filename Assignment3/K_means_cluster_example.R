@@ -27,6 +27,8 @@ kmeans.re
 # each observation
 kmeans.re$cluster
 
+view(kmeans.re$cluster)
+view(iris$Species)
 # Confusion Matrix
 cm <- table(iris$Species, kmeans.re$cluster)
 cm
