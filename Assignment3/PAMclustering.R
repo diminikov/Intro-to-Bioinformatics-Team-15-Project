@@ -10,8 +10,8 @@ PAM_top5k <- top5k
 scaleddata = scale(PAM_top5k)
 fviz_nbclust(scaleddata, pam, method ="silhouette")+theme_minimal()
     
-#create a PAM clustering using k = 25
-pamResult <- pam(scaleddata, k = 2)
+#create a PAM clustering using k = 6
+pamResult <- pam(scaleddata, k = 6)
 pamResult
 
 #bind the cluster data to the top5k
@@ -19,7 +19,7 @@ PAM_top5k$cluster = pamResult$clustering
 head(PAM_top5k)
 
 fviz_cluster(pamResult, 
-             palette =c("#007892","#D9455F"),
+             palette =c("#DAF7A6","#FFC300", "#FF5733", "#C70039", "#900C3F", "#581845"),
              ellipse.type ="euclid",
              repel =TRUE,
              ggtheme =theme_minimal())
