@@ -9,17 +9,33 @@ if (!require("BiocManager", quietly = TRUE))
 
 BiocManager::install("ComplexHeatmap")
 library(ComplexHeatMap)
-hm <- heatmap(df, show_row_names = FALSE)
-head(df)
+
+
+set.seed(100)
+m = matrix(rnorm(10), 100, 5)
+km = kmeans(m, 10)
+m2 <- cbind(m,km$cluster)
+view(m2)
 
 ordered <- Human_kmeans.re[order(Human_kmeans.re$cluster),1]
 
-view(ordered)
+view(M1)
 
+# M1 = km
+# m = df
 
-clustMatrix <- data.matrix(Human_kmeans.re$cluster) 
-view(clustMatrix)
-view(Human_kmeans.re$cluster)
-hm <- heatmap(df, reorderfun = Human_kmeans.re$cluster, show_row_names = FALSE)
+m2 <- cbind(df, M1$cluster)
+view(m2)
+o <- order(m2[,37])
+view(o)
+m3 <- m2[o,]
+view(m3)
+
+#heatmap(df)
+#heatmap(m3)
+heatmap(m3[,1:36])
+
+clusterOutput <- m3[,1:36]
+
 
 
