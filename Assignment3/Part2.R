@@ -1,3 +1,4 @@
+source("C:/Users/tnels/Documents/Intro-to-Bioinformatics-Team-15-Project/DataInput.R")
 source("C:/Users/tnels/Documents/Intro-to-Bioinformatics-Team-15-Project/Human_PCA_plot.R")
 #order human counts by variation
 var_genes <- apply(HumanCounts, 1, var)
