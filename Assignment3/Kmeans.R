@@ -8,19 +8,24 @@ install.packages("cluster")
 library(ClusterR)
 library(cluster)
 
+head(top5k)
+df <- scale(top5k)
+head(df, n = 3)
+
+install.packages("factoextra")
+library(factoextra)
+
+
+fviz_nbclust(df, kmeans, method = "wss") +
+  geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
+
 # Fitting K-Means clustering Model 
 # to training dataset
-set.seed(240) # Setting seed
-Human_kmeans.re <- kmeans(top5k, centers = 9, nstart = 20)
-Human_kmeans.re
+set.seed(123) # Setting seed
+Human_kmeans.re <- kmeans(df, 5, nstart = 25)
+print(Human_kmeans.re)
 
-# Cluster identification for 
-# each observation
-Human_kmeans.re$cluster
 
-#view(Human_kmeans.re$cluster)
-# Confusion Matrix
-#colnames(top5k)[0] <- "genes"
-#view(row.names(top5k))
-Human_cm <- table(row.names(top5k), Human_kmeans.re$cluster)
-Human_cm
+
+

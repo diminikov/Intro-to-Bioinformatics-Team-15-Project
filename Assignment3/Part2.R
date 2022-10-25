@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+source("C:/Users/tnels/Documents/Intro-to-Bioinformatics-Team-15-Project/DataInput.R")
+source("C:/Users/tnels/Documents/Intro-to-Bioinformatics-Team-15-Project/Human_PCA_plot.R")
+=======
 source("C:/Users/Stephen Smith/Documents/Intro-to-Bioinformatics-Team-15-Project/Human_PCA_plot.R")
+>>>>>>> 2ee6fd94ac211f48898beac27b9bf24908e6a27c
 #order human counts by variation
 var_genes <- apply(HumanCounts, 1, var)
 #head(var_genes)
