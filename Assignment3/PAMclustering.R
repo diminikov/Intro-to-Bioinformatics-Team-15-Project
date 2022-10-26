@@ -19,14 +19,14 @@ scaleddata_top10k <- scale(top10k)
 fviz_nbclust(scaleddata, pam, method ="silhouette")+theme_minimal()
     
 #create a PAM clustering using k = 2
-pamResult <- pam(scaleddata, k = 2)
+pamResult <- pam(scaleddata, k = 5)
 pamResult
 
 #creating a PAM cluster with top10, top100, and top1000 genes
-pamResult_top10 <- pam(scaleddata_top10, k = 2)
-pamResult_top100 <- pam(scaleddata_top100, k = 2)
-pamResult_top1k <- pam(scaleddata_top1k, k = 2)
-pamResult_top10k <- pam(scaleddata_top10k, k = 2)
+pamResult_top10 <- pam(scaleddata_top10, k = 5)
+pamResult_top100 <- pam(scaleddata_top100, k = 5)
+pamResult_top1k <- pam(scaleddata_top1k, k = 5)
+pamResult_top10k <- pam(scaleddata_top10k, k = 5)
 
 #bind the cluster data to the top5k
 PAM_top5k$cluster = pamResult$clustering
