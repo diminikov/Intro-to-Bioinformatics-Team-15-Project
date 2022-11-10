@@ -71,14 +71,14 @@ deseq_df <- deseq_results %>%
   dplyr::arrange(dplyr::desc(log2FoldChange))
 head(deseq_df)
 plotCounts(humandds, gene = "ENSG00000169059", intgroup = "characteristics_ch1")
-volcano_plot <- EnhancedVolcano::EnhancedVolcano(
+human_volcano_plot <- EnhancedVolcano::EnhancedVolcano(
   deseq_df,
   lab = deseq_df$Gene,
   x = "log2FoldChange",
   y = "padj",
   pCutoff = 0.01 # Loosen the cutoff since we supplied corrected p-values
 )
-volcano_plot
+human_volcano_plot
 
 
 #MOUSE
@@ -89,19 +89,21 @@ mouseColdata = data.frame(t(GSE183548_series_matrix[1:39,-1]))
 colnames(mouseColdata) = sub("!Sample_", "", GSE183548_series_matrix$X1[1:39])
 rownames(mouseColdata) = unlist(GSE183548_series_matrix[18,-1])
 mouseColdata = mouseColdata[,-18]
-mouseColdata = mouseColdata[-1:-18,]
+mouseColdata = mouseColdata[-19:-27,]
 
-GSE183548_Normalized_counts_3LL_samples <- read_delim("GSE183548_Normalized_counts_3LL_samples.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
+GSE183548_Normalized_counts_3LL_samples <- read_delim("GSE183548_Normalized_counts_tumour_samples.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
 mouseCounts = data.frame(GSE183548_Normalized_counts_3LL_samples)
 rownames(mouseCounts) = GSE183548_Normalized_counts_3LL_samples$Row.names
 mouseCounts = mouseCounts[,-1:-3]
+
+mouseColdata<-mouseColdata[ order(rownames(mouseColdata)), ]
 
 all(rownames(mouseColdata) %in% colnames(mouseCounts))
 
 library("DESeq2")
 mousedds <- DESeqDataSetFromMatrix(countData = round(mouseCounts),
                                    colData = mouseColdata,
-                                   design = ~ characteristics_ch1)
+                                   design = ~characteristics_ch1.2)
 deseq_object <- DESeq(mousedds)
 deseq_results <- results(deseq_object)
 deseq_results <- lfcShrink(
@@ -121,13 +123,13 @@ deseq_df <- deseq_results %>%
   # higher expression in RPL10 mutated samples
   dplyr::arrange(dplyr::desc(log2FoldChange))
 head(deseq_df)
-volcano_plot <- EnhancedVolcano::EnhancedVolcano(
+mouse_volcano_plot <- EnhancedVolcano::EnhancedVolcano(
   deseq_df,
   lab = deseq_df$Gene,
   x = "log2FoldChange",
   y = "padj",
   pCutoff = 0.01 # Loosen the cutoff since we supplied corrected p-values
 )
-volcano_plot
+mouse_volcano_plot
 
 
